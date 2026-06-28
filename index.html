@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>NN26 Credential Cheat Sheet</title>
+</head>
+<body>
+
+<style>
+  :root {
+    --bg: #0e0d15;
+    --surface: #17152340;
+    --card: #191728;
+    --card-2: #1f1d31;
+    --line: #2c2941;
+    --text: #efedf8;
+    --muted: #9c98b6;
+    --faint: #6f6b88;
+    --teal: #3fd6b0;        /* Friday / standard */
+    --amber: #f2a84b;       /* Thursday early entry */
+    --magenta: #e76796;     /* build week / prior */
+    --slate: #6b7da0;       /* no fixed arrival (layered add-ons) */
+    --patron: #5aa9ff;      /* Patron class */
+    --staff-real: #f59e42;  /* Staff class */
+    --radius: 14px;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  .sheet {
+    background:
+      radial-gradient(1100px 480px at 78% -8%, #1d2a3a 0%, transparent 58%),
+      radial-gradient(900px 420px at 10% -4%, #241a36 0%, transparent 55%),
+      var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: clamp(20px, 4vw, 56px);
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+
+  .eyebrow { font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--teal); font-weight: 600; margin: 0 0 10px; }
+  h1 { font-size: clamp(28px, 5vw, 44px); line-height: 1.02; letter-spacing: -.02em; margin: 0 0 14px; text-wrap: balance; font-weight: 800; }
+  .lede { color: var(--muted); max-width: 64ch; margin: 0 0 28px; font-size: 15.5px; }
+
+  /* ---- Toolbar / toggle ---- */
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center;
+    position: sticky; top: 0; z-index: 5;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    padding: 14px 0 16px; margin-bottom: 26px;
+    border-bottom: 1px solid var(--line);
+  }
+  .toggle { display: inline-flex; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 4px; gap: 2px; }
+  .toggle button {
+    appearance: none; border: 0; background: transparent; color: var(--muted);
+    font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+    padding: 7px 18px; border-radius: 999px; transition: background .15s, color .15s;
+  }
+  .toggle button:hover { color: var(--text); }
+  .toggle button[aria-pressed="true"] { background: var(--card-2); color: var(--text); }
+  .toggle button[data-ps="Patron"][aria-pressed="true"] { background: color-mix(in srgb, var(--patron) 26%, transparent); color: #dcebff; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--patron) 55%, transparent); }
+  .toggle button[data-ps="Staff"][aria-pressed="true"]  { background: color-mix(in srgb, var(--staff-real) 26%, transparent); color: #ffe9cf; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--staff-real) 55%, transparent); }
+  .toggle button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .summary { font-size: 13px; color: var(--faint); font-variant-numeric: tabular-nums; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; font-size: 12.5px; color: var(--muted); }
+  .legend-item { display: flex; align-items: center; gap: 7px; }
+  .swatch { width: 12px; height: 12px; border-radius: 4px; flex: none; }
+
+  /* ---- Section ---- */
+  .section { margin-bottom: 38px; }
+  .section.is-empty { display: none; }
+  .section-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+  .section-head h2 { font-size: 14px; letter-spacing: .16em; text-transform: uppercase; margin: 0; font-weight: 700; }
+  .section-head .count { font-size: 12px; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .section-note { font-size: 12.5px; color: var(--amber); margin: -4px 0 16px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+
+  .card { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 18px 16px; overflow: hidden; transition: transform .15s ease, border-color .15s ease; }
+  .card.is-hidden { display: none; }
+  .card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent, var(--slate)); }
+  @media (hover: hover) { .card:hover { transform: translateY(-2px); border-color: var(--accent, var(--slate)); } }
+
+  .card-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .code { font-family: var(--mono); font-size: 11.5px; letter-spacing: .04em; color: var(--accent, var(--slate)); background: color-mix(in srgb, var(--accent, var(--slate)) 14%, transparent); border: 1px solid color-mix(in srgb, var(--accent, var(--slate)) 35%, transparent); padding: 3px 9px; border-radius: 999px; font-weight: 600; }
+  .ps-badge { font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+  .ps-badge.Patron { color: #cfe5ff; background: color-mix(in srgb, var(--patron) 20%, transparent); border: 1px solid color-mix(in srgb, var(--patron) 45%, transparent); }
+  .ps-badge.Staff  { color: #ffe6c9; background: color-mix(in srgb, var(--staff-real) 20%, transparent); border: 1px solid color-mix(in srgb, var(--staff-real) 45%, transparent); }
+
+  .card h3 { font-size: 17px; letter-spacing: -.01em; margin: 0 0 4px; font-weight: 750; text-wrap: balance; }
+  .fmt { font-size: 12px; color: var(--faint); margin: 0 0 12px; }
+  .fmt .rfid { color: var(--teal); font-weight: 700; }
+  .who { font-size: 13px; color: var(--muted); margin: 0 0 14px; }
+
+  .attrs { display: flex; flex-wrap: wrap; gap: 7px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; padding: 4px 9px; border-radius: 8px; background: var(--card-2); border: 1px solid var(--line); color: var(--text); }
+  .chip .k { color: var(--faint); }
+  .chip .v { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .chip.arrival { background: color-mix(in srgb, var(--accent, var(--slate)) 16%, transparent); border-color: color-mix(in srgb, var(--accent, var(--slate)) 40%, transparent); color: var(--accent, var(--slate)); font-weight: 600; }
+
+  footer { margin-top: 14px; color: var(--faint); font-size: 12px; border-top: 1px solid var(--line); padding-top: 16px; }
+  @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+</style>
+
+<div class="sheet">
+  <div class="wrap">
+    <p class="eyebrow">Northern Nights 2026 · Box Office Reference</p>
+    <h1>Credential Cheat Sheet</h1>
+    <p class="lede">Every NN26 credential at a glance — who gets it, when they can arrive, and how it's worn. Use the toggle to show only patron or only staff credentials. Stripe color = permitted arrival day.</p>
+
+    <div class="toolbar">
+      <div class="toggle" role="group" aria-label="Filter by holder class">
+        <button data-ps="All" aria-pressed="true">All</button>
+        <button data-ps="Patron" aria-pressed="false">Patron</button>
+        <button data-ps="Staff" aria-pressed="false">Staff</button>
+      </div>
+      <span class="summary" id="summary"></span>
+      <div class="legend">
+        <span class="legend-item"><span class="swatch" style="background:var(--teal)"></span> Friday</span>
+        <span class="legend-item"><span class="swatch" style="background:var(--amber)"></span> Thursday</span>
+        <span class="legend-item"><span class="swatch" style="background:var(--magenta)"></span> Thu or prior</span>
+        <span class="legend-item"><span class="swatch" style="background:var(--slate)"></span> Layered (no fixed day)</span>
+      </div>
+    </div>
+
+    <div id="sections"></div>
+    <footer id="footer"></footer>
+  </div>
+</div>
+
+<script>
+  /* ============================================================
+     SINGLE SOURCE OF TRUTH. Edit a credential = edit one object.
+     ps: "Patron" | "Staff"   arrival: friday|thursday|prior|null
+     rfid: true marks the format as RFID (highlighted).
+     ============================================================ */
+
+  const ARRIVAL = {
+    friday:   { label: "Friday",       color: "var(--teal)" },
+    thursday: { label: "Thursday",     color: "var(--amber)" },
+    prior:    { label: "Thu or prior", color: "var(--magenta)" },
+  };
+
+  const GROUPS = [
+    { id: "adm",  title: "Admission",            note: "RFID wristbands — the base credential everyone wears." },
+    { id: "ee",   title: "Early Entry",          note: "Vinyl markers layered on a primary band to unlock earlier arrival." },
+    { id: "camp", title: "Camping",              note: "RFID windshield stickers — vehicle enters a camping field." },
+    { id: "park", title: "Parking",              note: "Windshield stickers — vehicle enters a parking lot (no camping)." },
+    { id: "veh",  title: "Vehicle Passes & EEL Camps", note: "Sticker supplements layered on a base camping/parking sticker." },
+    { id: "supp", title: "Worn Add-Ons",         note: "Worn alongside a primary wristband to grant extra access." },
+    { id: "tent", title: "Camping Tents",        note: "Pre-pitched tent credentials." },
+  ];
+
+  const C = [
+    // ---- Admission ----
+    { g:"adm", code:"ADM-001", name:"General Admission", ps:"Patron", fmt:"Wristband", rfid:true, arrival:"friday", who:"GA ticket holders — full-festival entry.", attrs:[["In & out","Yes"],["Qty","6,500"]] },
+    { g:"adm", code:"ADM-002", name:"VIP", ps:"Patron", fmt:"Wristband", rfid:true, arrival:"friday", who:"VIP ticket holders — adds VIP-zone access.", attrs:[["In & out","Yes"],["Qty","2,500"]] },
+    { g:"adm", code:"ADM-003", name:"Crew", ps:"Staff", fmt:"Wristband", rfid:true, arrival:"friday", who:"Contracted staff & crew on the working manifest.", attrs:[["In & out","Yes"],["Qty","1,500"]] },
+    { g:"adm", code:"ADM-004", name:"VIP Working", ps:"Staff", fmt:"Wristband", rfid:true, arrival:"friday", who:"Staff needing VIP-zone access — escorts, hospitality, sponsors.", attrs:[["In & out","Yes"],["Qty","1,000"]] },
+    { g:"adm", code:"ADM-005", name:"Production", ps:"Staff", fmt:"Wristband", rfid:true, arrival:"friday", who:"Production staff — production-zone access.", attrs:[["In & out","Yes"],["Qty","800"]] },
+    { g:"adm", code:"ADM-006", name:"Artist", ps:"Staff", fmt:"Wristband", rfid:true, arrival:"friday", who:"Performing artists & approved guests on the artist manifest.", attrs:[["In & out","Yes"],["Qty","1,500"]] },
+
+    // ---- Early Entry ----
+    { g:"ee", code:"EE-001", name:"Thursday Early Admission", ps:"Patron", fmt:"Vinyl marker", arrival:"thursday", who:"Patrons with a Thursday early-entry add-on.", attrs:[["Layered on","Primary"],["Qty","3,000"]] },
+    { g:"ee", code:"EE-002", name:"Build Week Early Admission", ps:"Staff", fmt:"Vinyl marker", arrival:"prior", who:"Staff & vendors on the build-week manifest.", attrs:[["Layered on","Primary"],["Qty","3,000"]] },
+
+    // ---- Camping ----
+    { g:"camp", code:"CAMP-001", name:"Car Camping", ps:"Patron", fmt:"Sticker", rfid:true, arrival:"friday", who:"Patron car-camping spot — general fields.", attrs:[["In & out","No"],["Qty","1,500"]] },
+    { g:"camp", code:"CAMP-002", name:"4x4 Car Camping", ps:"Patron", fmt:"Sticker", rfid:true, arrival:"friday", who:"Patron 4x4-only camping area.", attrs:[["In & out","No"],["Qty","200"]] },
+    { g:"camp", code:"CAMP-003", name:"RV Camping", ps:"Patron", fmt:"Sticker", rfid:true, arrival:"friday", who:"Patron RV camping spot.", attrs:[["In & out","No"],["Qty","300"]] },
+    { g:"camp", code:"CAMP-004", name:"RV River Camping", ps:"Patron", fmt:"Sticker", rfid:true, arrival:"friday", who:"Patron river-side RV area.", attrs:[["In & out","No"],["Qty","200"]] },
+    { g:"camp", code:"CAMP-005", name:"Group Car Camping", ps:"Patron", fmt:"Sticker", rfid:true, arrival:"friday", who:"Patron group-camping cohort.", attrs:[["In & out","No"],["Qty","120"]] },
+    { g:"camp", code:"CAMP-007", name:"EEL Car Camping", ps:"Staff", fmt:"Sticker", rfid:true, arrival:"prior", who:"Working crew with EEL assignments, by car. Pairs with a camp marker.", attrs:[["In & out","No"],["Qty","800"]] },
+    { g:"camp", code:"CAMP-008", name:"EEL RV Camping", ps:"Staff", fmt:"Sticker", rfid:true, arrival:"prior", who:"Working crew with EEL assignments, by RV. Pairs with a camp marker.", attrs:[["In & out","No"],["Qty","250"]] },
+    { g:"camp", code:"CAMP-009", name:"Vendor Camping", ps:"Staff", fmt:"Sticker", rfid:true, arrival:"friday", who:"Vendor booth staff camping on-site.", attrs:[["In & out","No"],["Qty","100"]] },
+
+    // ---- Parking ----
+    { g:"park", code:"PARK-001", name:"Reserved Parking", ps:"Patron", fmt:"Sticker", rfid:true, arrival:"friday", who:"Patron reserved-parking add-on. No camping.", attrs:[["In & out","Yes"],["Qty","1,000"]] },
+    { g:"park", code:"PARK-002", name:"Glamping Parking", ps:"Patron", fmt:"Sticker", rfid:true, arrival:"friday", who:"Glamping patrons' parking area.", attrs:[["In & out","Yes"],["Qty","100"]] },
+    { g:"park", code:"PARK-003", name:"Container Lot Parking", ps:"Staff", fmt:"Sticker", rfid:true, arrival:"friday", who:"Container-lot crew.", attrs:[["In & out","Yes"],["Qty","300"]] },
+    { g:"park", code:"PARK-004", name:"Tank Lot Parking", ps:"Staff", fmt:"Sticker", rfid:true, arrival:"friday", who:"Tank-lot crew.", attrs:[["In & out","Yes"],["Qty","200"]] },
+    { g:"park", code:"PARK-005", name:"Safety Parking", ps:"Staff", fmt:"Sticker", rfid:true, arrival:"friday", who:"Safety, medical & security staff.", attrs:[["In & out","Yes"],["Qty","300"]] },
+    { g:"park", code:"PARK-006", name:"Vendor Parking", ps:"Staff", fmt:"Sticker", rfid:true, arrival:"friday", who:"Vendor booth staff — Mercer Fraser lot.", attrs:[["In & out","Yes"],["Qty","100"]] },
+    { g:"park", code:"PARK-008", name:"CLR Parking", ps:"Staff", fmt:"Sticker", rfid:true, arrival:"friday", who:"CLR crew staff.", attrs:[["In & out","Yes"],["Qty","50"]] },
+    { g:"park", code:"PARK-009", name:"CVC Parking", ps:"Staff", fmt:"Sticker", rfid:true, arrival:"friday", who:"CVC crew staff.", attrs:[["In & out","Yes"],["Qty","50"]] },
+    { g:"park", code:"PARK-013", name:"ADA Parking", ps:"Patron", fmt:"Sticker", arrival:null, who:"ADA needs — patrons or staff. ADA parking area.", attrs:[["Class","Mixed"],["Qty","50"]] },
+    { g:"park", code:"OFF-001", name:"Off-Site Parking", ps:"Patron", fmt:"Sticker", rfid:true, arrival:"friday", who:"Patron off-site lot + shuttle. No camping.", attrs:[["In & out","Yes"],["Qty","1,000"]] },
+    { g:"park", code:"OFF-002", name:"Off-Site Parking Staff", ps:"Staff", fmt:"Sticker", rfid:true, arrival:"friday", who:"Working staff off-site lot + shuttle.", attrs:[["In & out","No"],["Qty","1,000"]] },
+    { g:"park", code:"OFF-003", name:"Build & Strike Off-Site", ps:"Staff", fmt:"Sticker", rfid:true, arrival:"friday", who:"Build/strike crew. On-site until Tue 7/14, then off-site.", attrs:[["In & out","Limited"],["Qty","500"]] },
+
+    // ---- Vehicle passes & EEL camps ----
+    { g:"veh", code:"VEE-001", name:"Thursday Vehicle Pass", ps:"Patron", fmt:"Sticker", arrival:"thursday", who:"Patron Thursday vehicle early-entry add-on.", attrs:[["In & out","Yes"],["Qty","2,000"]] },
+    { g:"veh", code:"VEE-002", name:"Build Week Vehicle Pass", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"Build-week vehicle access per build schedule.", attrs:[["Qty","3,000"]] },
+    { g:"veh", code:"SUP-008", name:"Escort Vehicle Pass", ps:"Staff", fmt:"Sticker", arrival:null, who:"Staff cars escorting talent/VIPs between zones.", attrs:[["Layered on","Parking"],["Qty","100"]] },
+    { g:"veh", code:"SUP-012", name:"Working Vehicle Pass", ps:"Staff", fmt:"Sticker", arrival:"friday", who:"Temporary on-site vehicle access during shifts.", attrs:[["In & out","Yes"],["Qty","200"]] },
+    { g:"veh", code:"SUP-014", name:"Madrone Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","50"]] },
+    { g:"veh", code:"SUP-015", name:"World Famous Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","100"]] },
+    { g:"veh", code:"SUP-016", name:"Flail Heavy Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","50"]] },
+    { g:"veh", code:"SUP-017", name:"Gnome Village Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","50"]] },
+    { g:"veh", code:"SUP-018", name:"Royal Sound Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","30"]] },
+    { g:"veh", code:"SUP-019", name:"Tony's Yard Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","20"]] },
+    { g:"veh", code:"SUP-020", name:"Mercer Fraser Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","40"]] },
+    { g:"veh", code:"SUP-021", name:"Containerland Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","40"]] },
+    { g:"veh", code:"SUP-022", name:"Write-In EEL", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — specific camp written in at issuance.", attrs:[["Layered on","EEL"],["Qty","300"]] },
+    { g:"veh", code:"SUP-023", name:"Rear Grove Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","50"]] },
+    { g:"veh", code:"SUP-024", name:"Willy Nelson Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","200"]] },
+    { g:"veh", code:"SUP-025", name:"Pond Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","50"]] },
+    { g:"veh", code:"SUP-026", name:"North Point Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","40"]] },
+    { g:"veh", code:"SUP-027", name:"Traffic HQ Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","40"]] },
+    { g:"veh", code:"SUP-028", name:"Middle Gate Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","30"]] },
+    { g:"veh", code:"SUP-029", name:"River Stage Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","30"]] },
+    { g:"veh", code:"SUP-030", name:"BLAP! Camp", ps:"Staff", fmt:"Sticker", arrival:"prior", who:"EEL camp marker — layered on EEL camping sticker.", attrs:[["Layered on","EEL"],["Qty","100"]] },
+
+    // ---- Worn add-ons ----
+    { g:"supp", code:"SUP-001", name:"Showers Pass", ps:"Patron", fmt:"Tyvek", arrival:null, who:"On-site shower facilities for the weekend.", attrs:[["Layered on","Wristband"],["Qty","4,000"]] },
+    { g:"supp", code:"SUP-002", name:"Co-Creator", ps:"Staff", fmt:"Tyvek", arrival:null, who:"Build crews & working artists — expanded build/production access.", attrs:[["Layered on","Wristband"],["Qty","500"]] },
+    { g:"supp", code:"SUP-003", name:"CVC", ps:"Staff", fmt:"Tyvek", arrival:null, who:"CVC residents/guests — restricted Bowman areas.", attrs:[["Layered on","Wristband"],["Qty","100"]] },
+    { g:"supp", code:"SUP-004", name:"CLR", ps:"Staff", fmt:"Tyvek", arrival:null, who:"CLR residents/guests — restricted CLR areas.", attrs:[["Layered on","Wristband"],["Qty","100"]] },
+    { g:"supp", code:"SUP-005", name:"Load Out", ps:"Staff", fmt:"Tyvek", arrival:null, who:"Staff/crew permitted on-site during load-out.", attrs:[["Layered on","Wristband"],["Qty","500"]] },
+    { g:"supp", code:"SUP-006", name:"Resident Kids", ps:"Patron", fmt:"Tyvek", arrival:null, who:"Dependents of on-site Bowman residents.", attrs:[["Layered on","Wristband"],["Qty","100"]] },
+    { g:"supp", code:"SUP-007", name:"Cart Operator", ps:"Staff", fmt:"Tyvek", arrival:null, who:"Authorized vehicle/equipment operators (signed waiver).", attrs:[["Layered on","Wristband"],["Qty","100"]] },
+    { g:"supp", code:"SUP-009", name:"ADA", ps:"Patron", fmt:"Tyvek", arrival:null, who:"ADA accommodation — patrons or staff & service animals.", attrs:[["Class","Mixed"],["Qty","200"]] },
+    { g:"supp", code:"SUP-010", name:"All Access", ps:"Staff", fmt:"Laminate", arrival:"friday", who:"Senior staff, execs & approved guests — all zones.", attrs:[["In & out","Yes"]] },
+    { g:"supp", code:"SUP-011", name:"All Access w/ Escort", ps:"Staff", fmt:"Laminate", arrival:null, who:"All-access valid only while escorted by staff.", attrs:[["Layered on","Wristband"]] },
+    { g:"supp", code:"SUP-013", name:"Glamping", ps:"Patron", fmt:"Tyvek", arrival:"friday", who:"Glamping-package patrons — check-in & tent assignment.", attrs:[["Layered on","Wristband"],["Qty","500"]] },
+
+    // ---- Camping tents ----
+    { g:"tent", code:"TENT-001", name:"Redwood Camping Tent", ps:"Patron", fmt:"Tyvek", arrival:"friday", who:"Patron pre-pitched tent — Redwood.", attrs:[["Qty","600"]] },
+    { g:"tent", code:"TENT-002", name:"Redwood Tent — Working", ps:"Staff", fmt:"Tyvek", arrival:"friday", who:"Working staff pre-pitched tent — Redwood.", attrs:[["Qty","500"]] },
+    { g:"tent", code:"TENT-004", name:"ADA Camping Tent", ps:"Patron", fmt:"Tyvek", arrival:"friday", who:"ADA pre-pitched tent.", attrs:[["Qty","100"]] },
+    { g:"tent", code:"TENT-005", name:"Artist Camping Tent", ps:"Staff", fmt:"Tyvek", arrival:"friday", who:"Artist pre-pitched tent.", attrs:[["Qty","50"]] },
+  ];
+
+  /* ===================== RENDERER ===================== */
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+  const accentFor = (c) => (c.arrival && ARRIVAL[c.arrival]) ? ARRIVAL[c.arrival].color : "var(--slate)";
+
+  function chip(k, v) { return `<span class="chip"><span class="k">${esc(k)}</span> <span class="v">${esc(v)}</span></span>`; }
+
+  function cardHTML(c) {
+    const acc = accentFor(c);
+    const arr = c.arrival && ARRIVAL[c.arrival] ? `<span class="chip arrival">${esc(ARRIVAL[c.arrival].label)}</span>` : "";
+    const fmt = c.rfid ? `<span class="rfid">RFID</span> ${esc(c.fmt)}` : esc(c.fmt);
+    const extra = (c.attrs || []).map(([k, v]) => chip(k, v)).join("");
+    return `
+      <div class="card" data-ps="${c.ps}" style="--accent:${acc}">
+        <div class="card-top">
+          <span class="code">${esc(c.code)}</span>
+          <span class="ps-badge ${c.ps}">${esc(c.ps)}</span>
+        </div>
+        <h3>${esc(c.name)}</h3>
+        <p class="fmt">${fmt}</p>
+        <p class="who">${esc(c.who)}</p>
+        <div class="attrs">${arr}${extra}</div>
+      </div>`;
+  }
+
+  function sectionHTML(g) {
+    const creds = C.filter((c) => c.g === g.id);
+    if (!creds.length) return "";
+    return `
+      <div class="section" data-group="${g.id}">
+        <div class="section-head">
+          <h2>${esc(g.title)}</h2>
+          <span class="count" data-count></span>
+        </div>
+        ${g.note ? `<p class="section-note">${esc(g.note)}</p>` : ""}
+        <div class="grid">${creds.map(cardHTML).join("")}</div>
+      </div>`;
+  }
+
+  document.getElementById("sections").innerHTML = GROUPS.map(sectionHTML).join("");
+
+  function applyFilter(ps) {
+    let shown = 0;
+    document.querySelectorAll(".section").forEach((sec) => {
+      let secCount = 0;
+      sec.querySelectorAll(".card").forEach((card) => {
+        const match = ps === "All" || card.dataset.ps === ps;
+        card.classList.toggle("is-hidden", !match);
+        if (match) secCount++;
+      });
+      sec.classList.toggle("is-empty", secCount === 0);
+      sec.querySelector("[data-count]").textContent = `${secCount} credential${secCount === 1 ? "" : "s"}`;
+      shown += secCount;
+    });
+    document.getElementById("summary").textContent = `Showing ${shown} of ${C.length} credentials`;
+  }
+
+  document.querySelectorAll(".toggle button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".toggle button").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      applyFilter(btn.dataset.ps);
+    });
+  });
+
+  applyFilter("All");
+
+  const nPatron = C.filter((c) => c.ps === "Patron").length;
+  const nStaff = C.filter((c) => c.ps === "Staff").length;
+  document.getElementById("footer").innerHTML =
+    `Source: NN26 Credentials base · Credential Types (${C.length} active). ` +
+    `${nPatron} patron · ${nStaff} staff. Quantities are NN26 planned. ADA credentials serve a mixed population.`;
+</script>
+
+</body>
+</html>
